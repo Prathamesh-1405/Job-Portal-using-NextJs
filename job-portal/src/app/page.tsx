@@ -40,6 +40,7 @@ export default function LoginPage() {
       if (!res.ok) {
         setError(data.message || 'Login failed');
       } else {
+        localStorage.setItem('token', data.token);
         router.push('/dashboard');
       }
     } catch {

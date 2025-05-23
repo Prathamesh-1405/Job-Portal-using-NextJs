@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/dbConnect';
+import connectDB from '@/lib/connectDB';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export async function POST(req: NextRequest) {
-  await connectToDatabase();
+  await connectDB();
 
   try {
     const { email, password } = await req.json();
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    console.log('Hashed Password:', hashedPassword);
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required.' }, { status: 400 });
@@ -19,6 +23,9 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ message: 'Invalid email or password.' }, { status: 401 });
     }
+    
+
+    
 
     const isMatch = await bcrypt.compare(password, user.password);
 

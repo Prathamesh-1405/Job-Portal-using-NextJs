@@ -1,12 +1,14 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
-
+type JobStatus = 'active' | 'inactive';
 export interface IJob extends Document {
+  _id: string;
   companyName: string;
   role: string;
   type: 'full time' | 'part time' | 'remote';
   salaryRange: string;
   skillsRequired: string[];
   description?: string;
+  status: JobStatus;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -19,7 +21,10 @@ const jobSchema = new Schema<IJob>(
     salaryRange: { type: String, required: true },
     skillsRequired: [{ type: String, required: true }],
     description: { type: String },
+     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   },
+  
+  
   { timestamps: true }
 );
 
